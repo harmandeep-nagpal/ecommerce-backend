@@ -1,0 +1,13 @@
+# This is one of the most important files as Imagine you build your project on your laptop.
+
+# You install
+
+# FastAPI
+# SQLAlchemy
+# PostgreSQL Driver
+# JWT library
+
+# Now imagine your friend downloads your project. How will they know which Python packages are needed?
+
+# That's exactly why we have it
+
