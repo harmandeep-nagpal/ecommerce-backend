@@ -1,2 +1,12 @@
 # This file tells Git "Ignore these files. Don't upload them to GitHub."
 # Suppose you have -> venv/. [Your virtual environment] , Should Git upload thousands of installed packages? -> Defineaitly not  
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+
+# Environment variables
+.env
