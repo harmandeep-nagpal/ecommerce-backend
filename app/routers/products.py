@@ -1,39 +1,19 @@
 from fastapi import APIRouter, HTTPException
 from app.schemas import ProductCreate, ProductResponse, ProductUpdate
+from app.services import product_service
 
 router = APIRouter(
     prefix="/products",
     tags=["Products"]
 )
 
-products = []
-next_product_id = 1
-
-
-@router.post("/")
+@router.post("/", response_model=ProductResponse)
 def create_product(product: ProductCreate):
-    global next_product_id
+    return product_service.create_product(product)
 
-    product_dict = product.model_dump()      # Convert Pydantic model to dictionary
-    product_dict["id"] = next_product_id     # Assign ID
-
-    products.append(product_dict)
-
-    next_product_id += 1                     # Increment for next product
-
-    return {
-        "message": "Product created successfully",
-        "product": product_dict
-    }
-
-@router.get("/")
-def get_products(limit: int = 10, skip: int = 0):
-    return {
-        "message": "Fetch all products",
-        "products" : products[skip : skip + limit],
-        "limit": limit,
-        "skip": skip
-        }
+@router.get("/", response_model=list[ProductResponse])
+def get_products():
+    return product_service.get_products()
         
 @router.get("/{product_id}",
         response_model=ProductResponse) # It tells FastAPI: "Whatever this function returns must match the ProductResponse schema."
