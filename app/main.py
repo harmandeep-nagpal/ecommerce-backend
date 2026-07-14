@@ -1,5 +1,9 @@
 from fastapi import FastAPI
 from app.routers import products
+from app.db.database import Base, engine
+from app.models.product import Product
+
+Base.metadata.create_all(bind=engine)
 
 APP_NAME = "E-commerce Backend"
 
