@@ -1,50 +1,60 @@
-from fastapi import APIRouter, HTTPException, Depends
-from app.schemas import ProductCreate, ProductResponse, ProductUpdate
-from app.services import product_service
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from app.db.database import get_db
+from app.schemas import ProductCreate, ProductResponse
+from app.services import product_service
 
 router = APIRouter(
     prefix="/products",
     tags=["Products"]
 )
-# ================================
 
+# ==========================================================
 # Dependency Injection Practice
-# Temporary learning examples
-# Will be removed before production implementation
+# (Can be removed later before production)
+# ==========================================================
 
 def get_name():
     return "Harry"
+
+
 def greet_user(name: str = Depends(get_name)):
     return f"Hello {name}"
+
+
 @router.get("/chain")
 def dependency_chain(message: str = Depends(greet_user)):
     return {"message": message}
 
-def get_msg(name : str):
+
+def get_msg(name: str):
     return f"Hello, {name}"
+
 
 @router.get("/hello")
 def hello(message: str = Depends(get_msg)):
     return {"message": message}
 
 
-def verify_api_key(api_key : str):
-    if api_key == "secret123":
-        return
-    else:
+def verify_api_key(api_key: str):
+    if api_key != "secret123":
         raise HTTPException(
             status_code=401,
-            detail="Wrong Api key"
+            detail="Wrong API key"
         )
-# ================================
+
 
 @router.get("/protected")
 def protected(_: None = Depends(verify_api_key)):
     return {
-    "message": "You are authorized"
-} 
+        "message": "You are authorized"
+    }
+
+
+# ==========================================================
+# Product CRUD APIs
+# ==========================================================
 
 @router.post("/", response_model=ProductResponse)
 def create_product(
@@ -53,36 +63,41 @@ def create_product(
 ):
     return product_service.create_product(product, db)
 
+
 @router.get("/", response_model=list[ProductResponse])
-def get_products(limit: int = 10, skip: int = 0):
-    return product_service.get_products(limit, skip)
-              
-@router.get("/{product_id}", response_model=ProductResponse) # It tells FastAPI: "Whatever this function returns must match the ProductResponse schema."
-def get_product_by_id(product_id: int):
-    return product_service.get_product_by_id(product_id)
+def get_products(
+    db: Session = Depends(get_db)
+):
+    return product_service.get_all_products(db)
+
+
+@router.get("/{product_id}", response_model=ProductResponse)
+def get_product_by_id(
+    product_id: int,
+    db: Session = Depends(get_db)
+):
+    return product_service.get_product(product_id, db)
+
 
 @router.put("/{product_id}", response_model=ProductResponse)
-def update_product(product_id: int, updated_product: ProductCreate):
-    return product_service.update_product(product_id, updated_product)
-
-@router.delete("/{product_id}",response_model=ProductResponse)
-def delete_product(product_id: int):
-    return product_service.delete_product(product_id)
-
-@router.patch("/{product_id}", response_model=ProductResponse)
-def update_product(product_id: int, update: ProductUpdate):
-        for product in products:
-            if product["id"] == product_id:   
-                update_data = update.model_dump(exclude_unset=True)
-                for key, value in update_data.items():# .items() is predefined py dictionary method.It returns every key-value pair.
-                    product[key] = value
-                return {
-                    "product" : product,
-                    "message" : "The product was updated succesfully"
-                }
-        raise HTTPException(
-            status_code=404,
-            detail=f"The product with ID {product_id} can't be found"
-        )
+def update_product(
+    product_id: int,
+    updated_product: ProductCreate,
+    db: Session = Depends(get_db)
+):
+    return product_service.update_product(
+        product_id,
+        updated_product,
+        db
+    )
 
 
+@router.delete("/{product_id}", response_model=ProductResponse)
+def delete_product(
+    product_id: int,
+    db: Session = Depends(get_db)
+):
+    return product_service.delete_product(
+        product_id,
+        db
+    )
