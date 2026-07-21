@@ -4,6 +4,16 @@ from sqlalchemy.orm import Session
 from app.models.product import Product
 from app.schemas.product import ProductCreate
 
+def get_product_by_id(product_id: int, db: Session):
+    product = db.query(Product).filter(Product.id == product_id).first()
+
+    if product is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Product not found"
+        )
+
+    return product
 
 def create_product(product: ProductCreate, db: Session):
     db_product = Product(
@@ -24,26 +34,11 @@ def get_all_products(db: Session):
 
 
 def get_product(product_id: int, db: Session):
-    product = db.query(Product).filter(Product.id == product_id).first()
-
-    if product is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Product not found"
-        )
-
-    return product
+    return get_product_by_id(product_id, db)
 
 
 def update_product(product_id: int, updated_product: ProductCreate, db: Session):
-    product = db.query(Product).filter(Product.id == product_id).first()
-
-    if product is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Product not found"
-        )
-
+    product = get_product_by_id(product_id, db)
     product.name = updated_product.name
     product.price = updated_product.price
     product.stock = updated_product.stock
@@ -55,15 +50,22 @@ def update_product(product_id: int, updated_product: ProductCreate, db: Session)
 
 
 def delete_product(product_id: int, db: Session):
-    product = db.query(Product).filter(Product.id == product_id).first()
-
-    if product is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Product not found"
-        )
+    product = get_product_by_id(product_id, db)
 
     db.delete(product)
     db.commit()
+
+    return product
+
+def patch_product(product_id: int, updated_product: ProductUpdate, db: Session):
+    product = get_product_by_id(product_id, db)
+
+    update_data = updated_product.model_dump(exclude_unset=True)
+
+    for key, value in update_data.items():
+        setattr(product, key, value)
+
+    db.commit()
+    db.refresh(product)
 
     return product

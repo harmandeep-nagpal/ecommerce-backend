@@ -10,4 +10,8 @@ class Product(Base):
     price = Column(Float)
     stock = Column(Integer)
     created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(
+    DateTime,
+    default=datetime.now,
+    onupdate=datetime.now
+)
