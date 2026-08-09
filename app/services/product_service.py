@@ -1,11 +1,26 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
+from app.repositories import product_repository
 
 from app.models.product import Product
-from app.schemas.product import ProductCreate
+from app.schemas import ProductCreate, ProductUpdate
 
-def get_product_by_id(product_id: int, db: Session):
-    product = db.query(Product).filter(Product.id == product_id).first()
+def create_product(product: ProductCreate, db: Session):
+    db_product = Product(
+        name=product.name,
+        price=product.price,
+        stock=product.stock
+    )
+
+    return product_repository.create_product(db_product,db)
+
+
+def get_all_products(db: Session):
+    return product_repository.get_all_products(db)
+
+
+def get_product(product_id: int, db: Session):
+    product = product_repository.get_product_by_id(product_id, db)
 
     if product is None:
         raise HTTPException(
@@ -15,57 +30,59 @@ def get_product_by_id(product_id: int, db: Session):
 
     return product
 
-def create_product(product: ProductCreate, db: Session):
-    db_product = Product(
-        name=product.name,
-        price=product.price,
-        stock=product.stock
-    )
-
-    db.add(db_product)
-    db.commit()
-    db.refresh(db_product)
-
-    return db_product
-
-
-def get_all_products(db: Session):
-    return db.query(Product).all()
-
-
-def get_product(product_id: int, db: Session):
-    return get_product_by_id(product_id, db)
-
 
 def update_product(product_id: int, updated_product: ProductCreate, db: Session):
-    product = get_product_by_id(product_id, db)
+    product = product_repository.get_product_by_id(
+        product_id,
+        db
+    )
+
+    if product is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Product not found"
+        )
+
     product.name = updated_product.name
     product.price = updated_product.price
     product.stock = updated_product.stock
 
-    db.commit()
-    db.refresh(product)
-
-    return product
+    return product_repository.update_product(product, db)
 
 
 def delete_product(product_id: int, db: Session):
-    product = get_product_by_id(product_id, db)
+    product = product_repository.get_product_by_id(
+        product_id,
+        db
+    )
 
-    db.delete(product)
-    db.commit()
+    if product is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Product not found"
+        )
 
-    return product
+    return product_repository.delete_product(product, db)
 
 def patch_product(product_id: int, updated_product: ProductUpdate, db: Session):
-    product = get_product_by_id(product_id, db)
+    product = product_repository.get_product_by_id(
+        product_id,
+        db
+    )
 
-    update_data = updated_product.model_dump(exclude_unset=True)
+    if product is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Product not found")
 
+    update_data = updated_product.model_dump(
+        exclude_unset=True
+    )
+    
     for key, value in update_data.items():
         setattr(product, key, value)
 
-    db.commit()
-    db.refresh(product)
-
-    return product
+    return product_repository.update_product(
+        product,
+        db
+    )

@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine 
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-DATABASE_URL = "postgresql://postgres:Harman01633%40@localhost:5432/ecommerce_db"
+from app.core.config import settings
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(settings.DATABASE_URL)
 
 SessionLocal = sessionmaker(bind=engine)
 
@@ -14,6 +14,5 @@ def get_db():
 
     try:
         yield db
-
     finally:
         db.close()

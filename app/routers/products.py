@@ -2,55 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
-from app.schemas import ProductCreate, ProductResponse
+from app.schemas import ProductCreate, ProductResponse, ProductUpdate
 from app.services import product_service
 
 router = APIRouter(
     prefix="/products",
     tags=["Products"]
 )
-
-# ==========================================================
-# Dependency Injection Practice
-# (Can be removed later before production)
-# ==========================================================
-
-def get_name():
-    return "Harry"
-
-
-def greet_user(name: str = Depends(get_name)):
-    return f"Hello {name}"
-
-
-@router.get("/chain")
-def dependency_chain(message: str = Depends(greet_user)):
-    return {"message": message}
-
-
-def get_msg(name: str):
-    return f"Hello, {name}"
-
-
-@router.get("/hello")
-def hello(message: str = Depends(get_msg)):
-    return {"message": message}
-
-
-def verify_api_key(api_key: str):
-    if api_key != "secret123":
-        raise HTTPException(
-            status_code=401,
-            detail="Wrong API key"
-        )
-
-
-@router.get("/protected")
-def protected(_: None = Depends(verify_api_key)):
-    return {
-        "message": "You are authorized"
-    }
-
 
 # ==========================================================
 # Product CRUD APIs
@@ -99,5 +57,17 @@ def delete_product(
 ):
     return product_service.delete_product(
         product_id,
+        db
+    )
+
+@router.patch("/{product_id}", response_model=ProductResponse)
+def patch_product(
+    product_id: int,
+    updated_product: ProductUpdate,
+    db: Session = Depends(get_db)
+):
+    return product_service.patch_product(
+        product_id,
+        updated_product,
         db
     )

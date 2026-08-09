@@ -1,7 +1,8 @@
 from fastapi import FastAPI
-from app.routers import products
+from app.routers import products, users
 from app.db.database import Base, engine
 from app.models.product import Product
+from app.models.user import User
 
 Base.metadata.create_all(bind=engine)
 
@@ -36,3 +37,6 @@ def get_version():
     return {
         "version" : APP_VERSION
     }
+
+app.include_router(products.router)
+app.include_router(users.router)
