@@ -117,6 +117,8 @@ User Service
           ▼
      Current User
 
+```
+
 # ⚙️ Application Setup
 
 The FastAPI application is initialized through:
@@ -129,6 +131,9 @@ Current major routers include:
 
 /users
 /products
+
+```
+```
 
 # 🗄️ Database
 
@@ -152,7 +157,8 @@ ORM models
 Database queries
 Transactions
 Persistent storage
-
+```
+```
 # 🧱 Models
 
 The project currently contains database models for:
@@ -172,7 +178,8 @@ Order
 OrderItem
 Payment
 Category
-
+```
+```
 # 📋 Pydantic Schemas
 
 Pydantic is used for request validation and response serialization.
@@ -209,7 +216,8 @@ class UserResponse(BaseModel):
     model_config = {
         "from_attributes": True
     }
-
+```
+```
 # 👤 User Management
 
 User functionality is implemented through:
@@ -221,7 +229,8 @@ User Service
 User Repository
    ↓
 PostgreSQL
-
+```
+```
 # 🔐 Authentication
 
 Authentication is implemented using JWT (JSON Web Tokens).
@@ -240,7 +249,8 @@ JWT validation
 OAuth2 Bearer token extraction
 Current-user dependency
 Protected endpoint foundation
-
+```
+```
 # 🔑 Password Security
 
 Passwords are never stored as plain text.
@@ -271,7 +281,8 @@ verify_password()
 Compare with stored hash
 
 The application only stores the password hash.
-
+```
+```
 # 🔐 JWT Authentication Flow
 
 ## The authentication system works as follows:
