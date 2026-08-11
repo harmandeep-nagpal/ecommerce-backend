@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import products, users
+from app.routers import products, users, cart, orders
 from app.db.database import Base, engine
 from app.models.product import Product
 from app.models.user import User
@@ -20,6 +20,8 @@ app = FastAPI(
 
 app.include_router(products.router)
 app.include_router(users.router)
+app.include_router(cart.router)
+app.include_router(orders.router)
 
 @app.get("/")
 def home():

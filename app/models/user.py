@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from datetime import datetime
-
+from sqlalchemy.orm import relationship
 from app.db.database import Base
 
 
@@ -32,8 +32,21 @@ class User(Base):
         nullable=False
     )
 
+    role = Column(
+        String,
+        default="user",
+        nullable=False
+    )
+
     created_at = Column(
         DateTime,
         default=datetime.now,
         nullable=False
     )
+
+    cart = relationship(
+    "Cart",
+    back_populates="user",
+    uselist=False,
+    cascade="all, delete-orphan"
+)

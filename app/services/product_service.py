@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from app.repositories import product_repository
-
+import math
 from app.models.product import Product
 from app.schemas import ProductCreate, ProductUpdate
 
@@ -14,9 +14,46 @@ def create_product(product: ProductCreate, db: Session):
 
     return product_repository.create_product(db_product,db)
 
+def get_all_products(
+    db: Session,
+    skip: int = 0,
+    limit: int = 20,
+    search: str | None = None,
+    min_price: float | None = None,
+    max_price: float | None = None,
+    sort_by: str = "id",
+    order: str = "asc"
+):
+    if (
+    min_price is not None
+    and max_price is not None
+    and min_price > max_price
+):
+        raise HTTPException(
+        status_code=400,
+        detail="min_price cannot be greater than max_price"
+    )
+    products, total = product_repository.get_all_products(
+        db,
+        skip,
+        limit,
+        search,
+        min_price,
+        max_price,
+        sort_by,
+        order
+    )
 
-def get_all_products(db: Session):
-    return product_repository.get_all_products(db)
+    page = (skip // limit) + 1
+    pages = math.ceil(total / limit)
+
+    return {
+        "items": products,
+        "page": page,
+        "limit": limit,
+        "total": total,
+        "pages": pages
+    }
 
 
 def get_product(product_id: int, db: Session):

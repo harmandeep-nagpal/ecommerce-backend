@@ -46,3 +46,10 @@ class ProductResponse(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+class ProductListResponse(BaseModel):
+    items: list[ProductResponse]
+    page: int
+    limit: int
+    total: int
+    pages: int
