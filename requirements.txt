@@ -1,13 +1,40 @@
-# This is one of the most important files as Imagine you build your project on your laptop.
+# This is one of the most important files as this installs every Library used 
 
-# You install
+fastapi==0.137.1
+uvicorn==0.49.0
 
-# FastAPI
-# SQLAlchemy
-# PostgreSQL Driver
-# JWT library
+SQLAlchemy==2.0.51
+psycopg2-binary==2.9.12
+alembic==1.19.1
 
-# Now imagine your friend downloads your project. How will they know which Python packages are needed?
+pydantic==2.13.4
+pydantic-settings==2.15.0
+python-dotenv==1.2.2
+email-validator==2.3.0
 
-# That's exactly why we have it
+python-jose==3.5.0
+passlib==1.7.4
+bcrypt==4.3.0
+
+pytest==9.1.1
+httpx==0.28.1
+
+# Why these?
+
+# | Package             | Purpose                         |
+# | ------------------- | ------------------------------- |
+# | `fastapi`           | REST API framework              |
+# | `uvicorn`           | Runs FastAPI                    |
+# | `SQLAlchemy`        | ORM/database interaction        |
+# | `psycopg2-binary`   | PostgreSQL driver               |
+# | `alembic`           | Database migrations             |
+# | `pydantic`          | Request/response validation     |
+# | `pydantic-settings` | `.env` configuration            |
+# | `python-dotenv`     | Environment variable loading    |
+# | `email-validator`   | Pydantic email validation       |
+# | `python-jose`       | JWT creation/verification       |
+# | `passlib`           | Password hashing utilities      |
+# | `bcrypt`            | Password hashing backend        |
+# | `pytest`            | Automated testing               |
+# | `httpx`             | FastAPI `TestClient` dependency |
 

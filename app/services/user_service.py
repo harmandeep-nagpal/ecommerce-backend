@@ -1,12 +1,13 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-
 from app.models.user import User
 from app.schemas import UserCreate
 from app.repositories import user_repository
 from app.utils.security import hash_password, verify_password
 from app.utils.jwt import create_access_token
+import logging
 
+logger = logging.getLogger(__name__)
 
 def create_user(user: UserCreate, db: Session):
     existing_user = user_repository.get_user_by_email(
@@ -63,6 +64,10 @@ def login_user(email: str, password: str, db: Session):
     access_token = create_access_token({
         "sub": str(user.id)
     })
+    logger.info(
+    "User login successful: user_id=%s",
+    user.id
+)
 
     return {
         "access_token": access_token,

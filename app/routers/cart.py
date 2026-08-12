@@ -18,7 +18,7 @@ def get_my_cart(
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    return cart_service.get_or_create_cart(
+    return cart_service.get_cart_response(
         current_user.id,
         db
     )

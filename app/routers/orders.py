@@ -5,12 +5,10 @@ from app.db.database import get_db
 from app.schemas import OrderResponse, OrderStatusUpdate
 from app.services import order_service
 
-
 router = APIRouter(
     prefix="/orders",
     tags=["Orders"]
 )
-
 
 @router.post(
     "/checkout",

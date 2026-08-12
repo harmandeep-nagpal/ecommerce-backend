@@ -21,6 +21,17 @@ def get_or_create_cart(
             db
         )
 
+    return cart
+
+def get_cart_response(
+    user_id: int,
+    db: Session
+):
+    cart = get_or_create_cart(
+        user_id,
+        db
+    )
+
     total = 0
 
     for item in cart.items:
@@ -32,7 +43,6 @@ def get_or_create_cart(
         "items": cart.items,
         "total": total
     }
-
 
 def add_to_cart(
     user_id: int,

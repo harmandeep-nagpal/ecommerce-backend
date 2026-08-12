@@ -1,343 +1,310 @@
-# 🛒 E-Commerce Backend
+# E-Commerce Backend API
 
-A production-oriented **E-Commerce Backend REST API** built with **FastAPI, PostgreSQL, SQLAlchemy, and JWT Authentication**.
+A production-oriented REST API for an e-commerce platform built with **FastAPI**, **PostgreSQL**, and **SQLAlchemy**. The project implements secure authentication, role-based authorization, product management, shopping cart functionality, transactional checkout, order management, database migrations, automated testing, logging, and containerized deployment.
 
-The project is being developed using a layered architecture with separation between **API routes, business logic, data access, models, schemas, and security**.
+## Tech Stack
 
-The primary goal of this project is to build a scalable backend while following industry-standard backend development practices.
-
----
-
-## 🚀 Project Overview
-
-This backend provides the foundation for an e-commerce platform where users will eventually be able to:
-
-- Register and authenticate
-- Manage their profiles
-- Browse products
-- Search and filter products
-- Manage shopping carts
-- Place orders
-- Track order status
-- Manage products
-- Authenticate using JWT
-- Access protected resources
-- Handle user roles and permissions
-- Interact with a PostgreSQL database
-
-The project is being developed incrementally, with authentication, database architecture, product management, and API design being implemented first.
+- **Backend:** FastAPI
+- **Language:** Python
+- **Database:** PostgreSQL
+- **ORM:** SQLAlchemy
+- **Authentication:** JWT
+- **Validation:** Pydantic
+- **Database Migrations:** Alembic
+- **Testing:** Pytest
+- **Server:** Uvicorn
+- **Containerization:** Docker & Docker Compose
+- **Version Control:** Git & GitHub
 
 ---
 
-# 🧰 Tech Stack
+## Features
 
-### Backend
-
-- **Python**
-- **FastAPI**
-- **SQLAlchemy**
-- **Pydantic**
-- **JWT Authentication**
-
-### Database
-
-- **PostgreSQL**
-
-### Security
-
-- **JWT**
-- **bcrypt**
-- Password hashing
+### Authentication & Authorization
+- User registration and login
+- Secure password hashing
+- JWT-based authentication
 - Protected API endpoints
+- Role-based access control
+- Admin-only operations
+- Authenticated user profile endpoint
 
-### Development Tools
+### Product Management
+- Create, read, update, and delete products
+- Product search
+- Filtering
+- Sorting
+- Pagination
+- Stock management
+- Admin-protected product operations
 
-- **Git**
-- **GitHub**
-- **Swagger / OpenAPI**
-- **Uvicorn**
-- **VS Code**
+### Shopping Cart
+- User-specific shopping carts
+- Add products to cart
+- Update quantities
+- Remove products
+- Cart total calculation
+- Automatic cart creation for users
 
-### Planned Infrastructure
+### Orders & Checkout
+- Transactional checkout process
+- Order and OrderItem management
+- Stock availability validation
+- Automatic inventory reduction
+- Cart clearing after successful checkout
+- User-specific order history
+- Individual order retrieval
+- Admin order-status management
 
-- **Docker**
-- Docker Compose
-- Production environment configuration
+### Database & Architecture
+- PostgreSQL relational database
+- SQLAlchemy ORM
+- Foreign-key relationships
+- Alembic migration management
+- Layered architecture using:
+  - Routers
+  - Schemas
+  - Services
+  - Repositories
+  - Models
+
+### Reliability & Testing
+- Global exception handling
+- Centralized application logging
+- Automated API tests with Pytest
+- Dedicated PostgreSQL test database
+- Migration testing against a fresh database
+
+### Deployment
+- Dockerized FastAPI application
+- PostgreSQL Docker container
+- Docker Compose configuration
+- Environment-based configuration
+- `.env.example` for required environment variables
 
 ---
 
-# 🏗️ Architecture
-
-The project follows a layered backend architecture.
+## Project Architecture
 
 ```text
-                    Client
-                      │
-                      ▼
-                FastAPI Router
-                      │
-                      ▼
-                  Services
-                      │
-                      ▼
-                Repositories
-                      │
-                      ▼
-                 SQLAlchemy
-                      │
-                      ▼
-                  PostgreSQL
+app/
+├── core/
+│   ├── config.py
+│   ├── security.py
+│   ├── exceptions.py
+│   └── logging.py
+│
+├── db/
+│   └── database.py
+│
+├── models/
+│   ├── user.py
+│   ├── product.py
+│   ├── cart.py
+│   ├── cart_item.py
+│   ├── order.py
+│   └── order_item.py
+│
+├── schemas/
+│   ├── user.py
+│   ├── product.py
+│   ├── cart.py
+│   └── order.py
+│
+├── repositories/
+│   ├── user_repository.py
+│   ├── product_repository.py
+│   ├── cart_repository.py
+│   └── order_repository.py
+│
+├── services/
+│   ├── user_service.py
+│   ├── product_service.py
+│   ├── cart_service.py
+│   └── order_service.py
+│
+├── routers/
+│   ├── users.py
+│   ├── products.py
+│   ├── cart.py
+│   └── orders.py
+│
+└── main.py
 
-Security-related functionality is separated into dedicated modules.
+alembic/
+├── versions/
+└── env.py
 
-Authentication Flow
+tests/
+├── conftest.py
+├── test_main.py
+└── test_users.py
 
-Client
-  │
-  ▼
-/users/login
-  │
-  ▼
-User Service
-  │
-  ├── Verify Password
-  │
-  └── Generate JWT
-          │
-          ▼
-        Client
-          │
-          │ Authorization: Bearer <token>
-          ▼
-   Protected Endpoint
-          │
-          ▼
-   JWT Verification
-          │
-          ▼
-     Current User
-
-```
-
-# ⚙️ Application Setup
-
-The FastAPI application is initialized through:
-
-app = FastAPI(...)
-
-The routers are registered in main.py.
-
-Current major routers include:
-
-/users
-/products
+Dockerfile
+docker-compose.yml
+requirements.txt
+.env.example
 
 ```
-```
+# API Overview
 
-# 🗄️ Database
+## Authentication
 
-The project uses:
+| Method | Endpoint          | Description                    |
+| ------ | ----------------- | ------------------------------ |
+| POST   | `/users/register` | Register a new user            |
+| POST   | `/users/login`    | Authenticate and receive JWT   |
+| GET    | `/users/me`       | Get authenticated user profile |
 
-PostgreSQL
-      │
-      ▼
-SQLAlchemy
-      │
-      ▼
-FastAPI
+## Products
 
-SQLAlchemy is used as the ORM to interact with PostgreSQL.
+| Method | Endpoint         | Description                 |
+| ------ | ---------------- | --------------------------- |
+| POST   | `/products`      | Create product              |
+| GET    | `/products`      | List/search/filter products |
+| GET    | `/products/{id}` | Get product                 |
+| PUT    | `/products/{id}` | Update product              |
+| PATCH  | `/products/{id}` | Partially update product    |
+| DELETE | `/products/{id}` | Delete product              |
 
-The database layer is responsible for:
+## Cart
 
-Database connection
-Session management
-ORM models
-Database queries
-Transactions
-Persistent storage
-```
-```
-# 🧱 Models
+| Method | Endpoint                   | Description             |
+| ------ | -------------------------- | ----------------------- |
+| GET    | `/cart/`                   | Get current user's cart |
+| POST   | `/cart/items`              | Add product to cart     |
+| PATCH  | `/cart/items/{product_id}` | Update quantity         |
+| DELETE | `/cart/items/{product_id}` | Remove product          |
 
-The project currently contains database models for:
+## Orders
 
-Users
-Products
+| Method | Endpoint                    | Description                 |
+| ------ | --------------------------- | --------------------------- |
+| POST   | `/orders/checkout`          | Create order from cart      |
+| GET    | `/orders/`                  | Get user's orders           |
+| GET    | `/orders/{order_id}`        | Get specific order          |
+| PATCH  | `/orders/{order_id}/status` | Update order status (Admin) |
 
-More models will be introduced as the e-commerce functionality expands.
-
-Planned models include:
+# Database Relationships
 
 User
-Product
-Cart
-CartItem
-Order
-OrderItem
-Payment
-Category
-```
-```
-# 📋 Pydantic Schemas
+ │
+ ├── Cart
+ │    └── CartItem ─── Product
+ │
+ └── Order
+      └── OrderItem ─── Product
 
-Pydantic is used for request validation and response serialization.
+The checkout workflow validates stock, calculates the order total, creates the order and order items, decreases inventory, and clears the cart within a database transaction.
 
-## User Schemas
+# Database Migrations
 
-The project currently contains:
+## Alembic manages the complete database schema:
 
-class UserCreate(BaseModel):
-    email: EmailStr
-    password: str = Field(
-        min_length=8,
-        max_length=100
-    )
-    full_name: str = Field(
-        min_length=2,
-        max_length=100
-    )
+Initial Schema
+      ↓
+User Role
+      ↓
+Cart & Cart Items
+      ↓
+Orders & Order Items
 
-Login schema:
+## A fresh PostgreSQL database can be initialized using:
 
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
+alembic upgrade head
 
-Response schema:
+# Testing
 
-class UserResponse(BaseModel):
-    id: int
-    email: EmailStr
-    full_name: str
-    is_active: bool
+The project uses Pytest with a dedicated PostgreSQL test database.
 
-    model_config = {
-        "from_attributes": True
-    }
-```
-```
-# 👤 User Management
+## Run the test suite:
 
-User functionality is implemented through:
+python -m pytest
+
+Current automated coverage includes:
+
+- Root API endpoint
+- User registration
+- Duplicate email validation
+- User login
+- JWT generation
+
+# Environment Configuration
+
+## Create a .env file based on .env.example:
+
+DATABASE_URL=postgresql://postgres:password@localhost:5432/ecommerce_db
+SECRET_KEY=your-secret-key
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+Sensitive configuration is excluded from version control.
+
+# Running Locally
+## 1. Install dependencies
+pip install -r requirements.txt
+
+## 2. Configure environment variables
+Create .env using .env.example.
+
+## 3. Run database migrations
+alembic upgrade head
+
+## 4. Start the API
+uvicorn app.main:app --reload
+
+The API will be available at:
+http://127.0.0.1:8000
+
+Interactive API documentation:
+http://127.0.0.1:8000/docs
+
+# Docker
+
+The project includes Docker configuration for running the FastAPI application with PostgreSQL.
+
+- docker compose build
+- docker compose up
+
+The application and database run as separate containers connected through Docker Compose networking.
+
+Database migrations can be applied inside the application environment with:
+
+- alembic upgrade head
+
+# Design Principles
+
+The backend follows a layered architecture to separate responsibilities:
 
 Router
-   ↓
-User Service
-   ↓
-User Repository
-   ↓
-PostgreSQL
-```
-```
-# 🔐 Authentication
+  ↓
+Service
+  ↓
+Repository
+  ↓
+SQLAlchemy / PostgreSQL
 
-Authentication is implemented using JWT (JSON Web Tokens).
+- Routers handle HTTP requests and responses.
+- Schemas validate API input and output.
+- Services contain business logic.
+- Repositories handle database operations.
+- Models define database entities and relationships.
+- Core contains shared configuration, security, logging, and exception handling.
 
-## Authentication Features
+This separation improves maintainability, testability, and scalability.
 
-Currently implemented:
+# Security
 
-User registration
-Password hashing
-Password verification
-JWT generation
-JWT expiration
-JWT decoding
-JWT validation
-OAuth2 Bearer token extraction
-Current-user dependency
-Protected endpoint foundation
-```
-```
-# 🔑 Password Security
+- Passwords are stored as secure hashes rather than plaintext.
+- JWT tokens are used for authentication.
+- Protected routes require valid authentication.
+- Administrative operations use role-based authorization.
+- Secrets are stored through environment variables.
+- Sensitive information such as passwords and JWTs is not written to application logs.
 
-Passwords are never stored as plain text.
+# Author
 
-The project uses bcrypt through Passlib.
+## Harmandeep Nagpal
 
-Password creation:
-
-Plain Password
-      │
-      ▼
-bcrypt hashing
-      │
-      ▼
-Password Hash
-      │
-      ▼
-PostgreSQL
-
-During login:
-
-Password entered by user
-          │
-          ▼
-verify_password()
-          │
-          ▼
-Compare with stored hash
-
-The application only stores the password hash.
-```
-```
-# 🔐 JWT Authentication Flow
-
-## The authentication system works as follows:
-
-User
- │
- ▼
-POST /users/register
- │
- ▼
-Validate UserCreate schema
- │
- ▼
-Hash Password
- │
- ▼
-User Service
- │
- ▼
-User Repository
- │
- ▼
-PostgreSQL
- │
- ▼
-UserResponse
-
-## Login Flow
-
-User
- │
- ▼
-POST /users/login
- │
- ▼
-UserLogin Schema
- │
- ▼
-User Service
- │
- ▼
-Find User by Email
- │
- ▼
-Verify Password
- │
- ▼
-Create JWT
- │
- ▼
-Return Access Token
-
-JWT response:
-
-{
-    "access_token": "JWT_TOKEN",
-    "token_type": "bearer"
-}
+Built as a production-oriented backend engineering project using modern Python backend technologies.
+---
