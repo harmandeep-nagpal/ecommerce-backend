@@ -146,9 +146,9 @@ requirements.txt
 .env.example
 
 ```
-# API Overview
+## API Overview
 
-## Authentication
+### Authentication
 
 | Method | Endpoint          | Description                    |
 | ------ | ----------------- | ------------------------------ |
@@ -156,7 +156,7 @@ requirements.txt
 | POST   | `/users/login`    | Authenticate and receive JWT   |
 | GET    | `/users/me`       | Get authenticated user profile |
 
-## Products
+### Products
 
 | Method | Endpoint         | Description                 |
 | ------ | ---------------- | --------------------------- |
@@ -167,7 +167,7 @@ requirements.txt
 | PATCH  | `/products/{id}` | Partially update product    |
 | DELETE | `/products/{id}` | Delete product              |
 
-## Cart
+### Cart
 
 | Method | Endpoint                   | Description             |
 | ------ | -------------------------- | ----------------------- |
@@ -176,7 +176,7 @@ requirements.txt
 | PATCH  | `/cart/items/{product_id}` | Update quantity         |
 | DELETE | `/cart/items/{product_id}` | Remove product          |
 
-## Orders
+### Orders
 
 | Method | Endpoint                    | Description                 |
 | ------ | --------------------------- | --------------------------- |
@@ -185,7 +185,7 @@ requirements.txt
 | GET    | `/orders/{order_id}`        | Get specific order          |
 | PATCH  | `/orders/{order_id}/status` | Update order status (Admin) |
 
-# Database Relationships
+## Database Relationships
 
 User
  │
@@ -197,9 +197,9 @@ User
 
 The checkout workflow validates stock, calculates the order total, creates the order and order items, decreases inventory, and clears the cart within a database transaction.
 
-# Database Migrations
+## Database Migrations
 
-## Alembic manages the complete database schema:
+### Alembic manages the complete database schema:
 
 Initial Schema
       ↓
@@ -209,15 +209,15 @@ Cart & Cart Items
       ↓
 Orders & Order Items
 
-## A fresh PostgreSQL database can be initialized using:
+### A fresh PostgreSQL database can be initialized using:
 
 alembic upgrade head
 
-# Testing
+## Testing
 
 The project uses Pytest with a dedicated PostgreSQL test database.
 
-## Run the test suite:
+### Run the test suite:
 
 python -m pytest
 
@@ -229,9 +229,9 @@ Current automated coverage includes:
 - User login
 - JWT generation
 
-# Environment Configuration
+## Environment Configuration
 
-## Create a .env file based on .env.example:
+### Create a .env file based on .env.example:
 
 DATABASE_URL=postgresql://postgres:password@localhost:5432/ecommerce_db
 SECRET_KEY=your-secret-key
@@ -240,17 +240,17 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 
 Sensitive configuration is excluded from version control.
 
-# Running Locally
-## 1. Install dependencies
+## Running Locally
+### 1. Install dependencies
 pip install -r requirements.txt
 
-## 2. Configure environment variables
+### 2. Configure environment variables
 Create .env using .env.example.
 
-## 3. Run database migrations
+### 3. Run database migrations
 alembic upgrade head
 
-## 4. Start the API
+### 4. Start the API
 uvicorn app.main:app --reload
 
 The API will be available at:
@@ -259,7 +259,7 @@ http://127.0.0.1:8000
 Interactive API documentation:
 http://127.0.0.1:8000/docs
 
-# Docker
+## Docker
 
 The project includes Docker configuration for running the FastAPI application with PostgreSQL.
 
@@ -272,7 +272,7 @@ Database migrations can be applied inside the application environment with:
 
 - alembic upgrade head
 
-# Design Principles
+## Design Principles
 
 The backend follows a layered architecture to separate responsibilities:
 
@@ -293,7 +293,7 @@ SQLAlchemy / PostgreSQL
 
 This separation improves maintainability, testability, and scalability.
 
-# Security
+## Security
 
 - Passwords are stored as secure hashes rather than plaintext.
 - JWT tokens are used for authentication.
@@ -302,7 +302,7 @@ This separation improves maintainability, testability, and scalability.
 - Secrets are stored through environment variables.
 - Sensitive information such as passwords and JWTs is not written to application logs.
 
-# Author
+## Author
 
 ## Harmandeep Nagpal
 
